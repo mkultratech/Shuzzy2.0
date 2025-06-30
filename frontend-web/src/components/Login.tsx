@@ -57,25 +57,34 @@ export default function Login()
   const [error, setError]       = useState('');
   const navigate = useNavigate();
 
-	function click(event:any) : void
-  {
-    event.preventDefault();
+// 	function click(event:any) : void
+//   {
+//     event.preventDefault();
 
-    alert('doIt()');
-  }
+//     alert('doIt()');
+//   }
 
   async function doLogin(e: React.FormEvent) 
   {
 		e.preventDefault();
+		console.log('🛠️ doLogin fired', { username, password });
+		// const url = buildPath('api/login');
+
 		try 
 		{
-			const res = await fetch(buildPath('api/login'), {
+			const res = await fetch('/api/login', {
 					method: 'POST',
 					headers: {'Content-Type': 'application/json'},
 					body: JSON.stringify({login: username, password})
 			});
 
+			if (!res.ok) {
+        		throw new Error(`HTTP ${res.status}`);
+    		}
+
 			const data = await res.json();
+			console.log('Login response →', data);
+
 			if (data.id > 0) 
 			{
 				localStorage.setItem('user', JSON.stringify(data));
@@ -102,6 +111,7 @@ export default function Login()
 			<form onSubmit = {doLogin} className = "login-form">
 
 				<input 
+					name = "login"
 					type = "text"
 					placeholder = "Username"
 					value = {username}
@@ -117,7 +127,7 @@ export default function Login()
 					className = "input"
 				/>
 				
-				<button type = "submit" className= "button" onClick={click}>Log In</button >
+				<button type = "submit" className= "button">Log In</button>
 				{error && <p className="text-red-600">{error} </p>}
 
 			</form>

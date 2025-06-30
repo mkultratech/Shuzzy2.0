@@ -1,58 +1,67 @@
 import React, { useState } from 'react';
 import { buildPath } from '../utils/api';
-export default function CardUI() {
-const user = JSON.parse(localStorage.getItem('user') || '{}');
-const [search, setSearch] = useState('');
-const [cardName, setCardName] = useState('');
-const [results, setResults] = useState<string[]>([]);
-const [message, setMessage] = useState('');
 
-async function addCard(e: React.MouseEvent) {
-    e.preventDefault();
-    try {
-    const res = await fetch(buildPath('api/addcard'), {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({userId: user.id, card: cardName})
-    });
-    const data = await res.json();
-        setMessage(data.error ? 'Error: ' + data.error : 'Card added');
-    } 
-    catch(err: any) {
-        setMessage(err.message);
-    }
-}
-async function searchCard(e: React.MouseEvent) {
-    e.preventDefault();
-    try {
-        const res = await fetch(buildPath('api/searchcards'), {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({userId: user.id, search})
-        });
-        const data = await res.json();
-        setResults(data.results);
-        setMessage('');
-    } 
-    catch(err: any) {
-        setMessage(err.message);
-    }
-}
+export default function CardUI() 
+{
+	const user = JSON.parse(localStorage.getItem('user') || '{}');
+	const [search, setSearch] = useState('');
+	const [cardName, setCardName] = useState('');
+	const [results, setResults] = useState<string[]>([]);
+	const [message, setMessage] = useState('');
 
-return (
-    <div className="space-y-4">
-        <div>
+	async function addCard(e: React.MouseEvent) 
+	{
+		e.preventDefault();
+		
+		try {
+		const res = await fetch('/api/addcard', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({userId: user.id, card: cardName})
+		});
+		const data = await res.json();
+			setMessage(data.error ? 'Error: ' + data.error : 'Card added');
+		} 
+		catch(err: any) {
+			setMessage(err.message);
+		}
+	}
+
+	async function searchCard(e: React.MouseEvent) 
+	{
+		e.preventDefault();
+		try {
+			const res = await fetch('/api/searchcards', {
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({userId: user.id, search})
+			});
+			const data = await res.json();
+			setResults(data.results);
+			setMessage('Card Added');
+		} 
+		catch(err: any) {
+			setMessage(err.message);
+		}
+	}
+
+	return (
+		<div className="space-y-4">
+				<div>
 					<input
-							type="text"
-							placeholder="Search cards"
-							value={search}
-							onChange={e => setSearch(e.target.value)}
-							className="input"
+						type="text"
+						placeholder="Search cards"
+						value={search}
+						onChange={e => setSearch(e.target.value)}
+						className="input"
 					/>
-						<button onClick={searchCard} className="btn">Search</button>
+					<button onClick={searchCard} className="btn">Search</button>
+
+					{/* // Format search result(s) as a list with commas */}
 					</div>
-					{results.length > 0 && <p>Found: {results.join(', ')}</p>}
+						{results.length > 0 && <p>Found: {results.join(', ')}</p>}
 					<div>
+
 					<input
 						type="text"
 						placeholder="New card name"
@@ -60,11 +69,12 @@ return (
 						onChange={e => setCardName(e.target.value)}
 						className="input"
 					/>
+
 					<button onClick={addCard} className="btn">Add Card</button>
-        </div>
-        {message && <p>{message}</p>}
-    </div>
-    );
+				</div>
+				{message && <p>{message}</p>}
+		</div>
+		);
 }
 
 

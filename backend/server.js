@@ -19,28 +19,215 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 // Import routes
-const authRouter = require('./api/auth');
+// const authRouter = require('./api/auth');
 
 // Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch(err => console.error('❌ MongoDB error:', err));
+// mongoose
+//   .connect(process.env.MONGO_URI)
+//   .then(() => console.log('✅ MongoDB connected'))
+//   .catch(err => console.error('❌ MongoDB error:', err));
 
 const app = express();
+
+// Middleware to log requests
+app.use((req, res, next) => {
+  console.log(`→ [${req.method}] ${req.url}`);
+  next();
+});
 
 // Global middleware
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => 
+{
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH, DELETE, OPTIONS'
+  );
+  next();
+});
+
 // Mount routers under their feature paths
-app.use('/api/auth', authRouter);
+// app.use('/api/auth', authRouter);
 
 // (Optional) health check
-app.get('/ping', (_req, res) => res.send('pong'));
+// app.get('/ping', (_req, res) => res.send('pong'));
 
-const PORT = process.env.PORT || 5000;
+
+var cardList = 
+[
+  'Roy Campanella',
+  'Paul Molitor',
+  'Tony Gwynn',
+  'Dennis Eckersley',
+  'Reggie Jackson',
+  'Gaylord Perry',
+  'Buck Leonard',
+  'Rollie Fingers',
+  'Charlie Gehringer',
+  'Wade Boggs',
+  'Carl Hubbell',
+  'Dave Winfield',
+  'Jackie Robinson',
+  'Ken Griffey, Jr.',
+  'Al Simmons',
+  'Chuck Klein',
+  'Mel Ott',
+  'Mark McGwire',
+  'Nolan Ryan',
+  'Ralph Kiner',
+  'Yogi Berra',
+  'Goose Goslin',
+  'Greg Maddux',
+  'Frankie Frisch',
+  'Ernie Banks',
+  'Ozzie Smith',
+  'Hank Greenberg',
+  'Kirby Puckett',
+  'Bob Feller',
+  'Dizzy Dean',
+  'Joe Jackson',
+  'Sam Crawford',
+  'Barry Bonds',
+  'Duke Snider',
+  'George Sisler',
+  'Ed Walsh',
+  'Tom Seaver',
+  'Willie Stargell',
+  'Bob Gibson',
+  'Brooks Robinson',
+  'Steve Carlton',
+  'Joe Medwick',
+  'Nap Lajoie',
+  'Cal Ripken, Jr.',
+  'Mike Schmidt',
+  'Eddie Murray',
+  'Tris Speaker',
+  'Al Kaline',
+  'Sandy Koufax',
+  'Willie Keeler',
+  'Pete Rose',
+  'Robin Roberts',
+  'Eddie Collins',
+  'Lefty Gomez',
+  'Lefty Grove',
+  'Carl Yastrzemski',
+  'Frank Robinson',
+  'Juan Marichal',
+  'Warren Spahn',
+  'Pie Traynor',
+  'Roberto Clemente',
+  'Harmon Killebrew',
+  'Satchel Paige',
+  'Eddie Plank',
+  'Josh Gibson',
+  'Oscar Charleston',
+  'Mickey Mantle',
+  'Cool Papa Bell',
+  'Johnny Bench',
+  'Mickey Cochrane',
+  'Jimmie Foxx',
+  'Jim Palmer',
+  'Cy Young',
+  'Eddie Mathews',
+  'Honus Wagner',
+  'Paul Waner',
+  'Grover Alexander',
+  'Rod Carew',
+  'Joe DiMaggio',
+  'Joe Morgan',
+  'Stan Musial',
+  'Bill Terry',
+  'Rogers Hornsby',
+  'Lou Brock',
+  'Ted Williams',
+  'Bill Dickey',
+  'Christy Mathewson',
+  'Willie McCovey',
+  'Lou Gehrig',
+  'George Brett',
+  'Hank Aaron',
+  'Harry Heilmann',
+  'Walter Johnson',
+  'Roger Clemens',
+  'Ty Cobb',
+  'Whitey Ford',
+  'Willie Mays',
+  'Rickey Henderson',
+  'Babe Ruth'
+];
+
+app.post('/api/addcard', async (req, res) => 
+{
+  const { userId, card } = req.body;
+
+  // TEMP FOR LOCAL TESTING
+  cardList.push(card);
+
+  const ret = { error: '' };
+  res.status(200).json(ret);
+
+});
+
+app.post('/api/login', async (req, res, next) =>
+{
+  // incoming: login, password
+  // outgoing: id, firstName, lastName, error
+  const { login, password } = req.body;
+  let error = '';
+  let id = -1, fn = '', ln = '';
+  
+  if ( login.toLowerCase() === 'thud' && password === 'COP4331C')
+  {
+    id = 1; 
+    fn = 'Thu';
+    ln = 'Do';
+  }
+
+  else
+  {
+    error = 'Invalid username / password';
+  }
+
+  // var ret = {id: id, firstName:fn, lastName: ln, error: error};
+  res.status(200).json({id, firstName: fn, lastName: ln, error});
+});
+
+app.post('/api/searchcards', async (req, res, next) =>
+{
+  // incoming: userID, search
+  // outgoing: results[], error
+
+  const { userId, search } = req.body;
+  var _search = search.toLowerCase().trim();
+  var _ret = [];
+
+  for (var i = 0; i < cardList.length; i++)
+  {
+    var lowerFromList = cardList[i].toLocaleLowerCase();
+    if ( lowerFromList.indexOf (_search) >= 0)
+    {
+      _ret.push( cardList[i] );
+    }
+  }
+
+  var ret = {results: _ret, error:''};
+  res.status(200).json(ret);
+
+});
+
+
+// Start server
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
 
 
 
