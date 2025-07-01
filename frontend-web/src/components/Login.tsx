@@ -7,47 +7,12 @@
 // Uses React Router for navigation after successful login.
 // Displays a page title component for consistent UI.
 
-import { buildPath } from '../utils/api'; // <-- our helper - DO IT
+// import { buildPath } from '../utils/api'; // <-- our helper - DO IT
 // import PageTitle from './PageTitle'; 
 
 
 import  { useNavigate } from 'react-router-dom'; 
 import React, { useState } from 'react';
-
-
-// export default function Login()
-// {
-
-// 	const [username, setUsername] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [error, setError]       = useState('');
-//   const navigate = useNavigate();
-
-//   function doLogin(event:any) : void
-//   {
-//     event.preventDefault();
-
-//     alert('doIt()');
-//   }
-
-//     return(
-//       <div id="loginDiv">
-//         <span id="inner-title">PLEASE LOG IN</span><br />
-//         <input type="text" id="userName" placeholder="Username" ><br />
-//         <input type="password" id="loginPassword" placeholder="Password" /><br />
-//         <input type="submit" id="loginButton" className="buttons" value = "Do It"
-//           onClick={doLogin} />
-//         <span id="loginResult"></span>
-//      </div>
-//     );
-// };
-
-
-
-
-
-
-
 
 
 export default function Login() 
@@ -56,13 +21,6 @@ export default function Login()
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
   const navigate = useNavigate();
-
-// 	function click(event:any) : void
-//   {
-//     event.preventDefault();
-
-//     alert('doIt()');
-//   }
 
   async function doLogin(e: React.FormEvent) 
   {
@@ -135,36 +93,5 @@ export default function Login()
 }
 
  
- 
- // {<input type="submit" id="loginButton" className="buttons" value = "Do It" onClick={click} /> }
- 
-//     const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     try {
-//       const result = await post<{ token: string }>('login', { username, password });
-//       // e.g. store token, redirect, etc.
-//       console.log('Logged in, got token:', result.token);
-//     } catch (err: any) {
-//       setError(err.message || 'Login failed');
-//     }
-//   };
 
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <input
-//         value={username}
-//         onChange={e => setUsername(e.target.value)}
-//         placeholder="Username"
-//       />
-//       <input
-//         type="password"
-//         value={password}
-//         onChange={e => setPassword(e.target.value)}
-//         placeholder="Password"
-//       />
-//       <button type="submit">Log in</button>
-//       {error && <p style={{ color: 'red' }}>{error}</p>}
-//     </form>
-//   );
-// }
 
